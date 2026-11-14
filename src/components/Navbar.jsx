@@ -1,0 +1,23 @@
+import logo from '../assets/cup-of-drink.png'
+
+function Navbar() {
+  return (
+    <div className="sticky top-0 z-50 mx-auto flex h-20 w-full flex-row flex-nowrap items-center justify-between bg-white shadow-xl/20">
+      <div className="flex flex-row items-center gap-5 ml-20">
+        <img src={logo} alt="" className="w-[42px]" />
+        <p className="font-bold text-[#4f220e]">Kopi_Ko</p>
+      </div>
+      <nav className="w-[800px] font-bold text-[#4f220e] mr-20">
+        <ul className="flex list-none flex-row justify-between">
+          <li>Home</li>
+          <li>Shop</li>
+          <li>Menu</li>
+          <li>About Us</li>
+          <li>Blog</li>
+          <li>Contact</li>
+        </ul>
+      </nav>
+    </div>
+  )
+}
+export default Navbar;
