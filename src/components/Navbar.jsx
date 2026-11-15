@@ -9,9 +9,9 @@ function Navbar() {
       </div>
       <nav className="w-[800px] font-bold text-[#4f220e] mr-20">
         <ul className="flex list-none flex-row justify-between">
-          <li>Home</li>
-          <li>Shop</li>
-          <li>Menu</li>
+          <li><a href="/" className="transition-colors hover:text-[#9b5b28]">Home</a></li>
+          <li><a href="/shop" className="transition-colors hover:text-[#9b5b28]">Shop</a></li>
+          <li><a href="/menu" className="transition-colors hover:text-[#9b5b28]">Menu</a></li>
           <li>About Us</li>
           <li>Blog</li>
           <li>Contact</li>
