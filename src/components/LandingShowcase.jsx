@@ -1,7 +1,7 @@
 const benefits = [
   {
     title: 'Free Shipping',
-    detail: 'On orders over $50',
+    detail: 'On orders over ₱2,500',
     icon: (
       <>
         <path d="M3 7h11v10H3z" />
@@ -41,10 +41,10 @@ const benefits = [
 ]
 
 const products = [
-  { name: 'Premium Arabica Coffee Beans', price: '$14.99', reviews: 245, color: '#28231f', roast: 'ARABICA' },
-  { name: 'Classic House Blend', price: '$13.99', reviews: 189, color: '#9b5b28', roast: 'HOUSE BLEND' },
-  { name: 'Dark Roast Espresso', price: '$15.99', reviews: 312, color: '#29231e', roast: 'DARK ROAST' },
-  { name: 'Hazelnut Flavored Coffee', price: '$12.99', reviews: 156, color: '#b67a43', roast: 'HAZELNUT' },
+  { name: 'Premium Arabica Coffee Beans', price: '₱849', reviews: 245, color: '#28231f', roast: 'ARABICA' },
+  { name: 'Classic House Blend', price: '₱799', reviews: 189, color: '#9b5b28', roast: 'HOUSE BLEND' },
+  { name: 'Dark Roast Espresso', price: '₱899', reviews: 312, color: '#29231e', roast: 'DARK ROAST' },
+  { name: 'Hazelnut Flavored Coffee', price: '₱749', reviews: 156, color: '#b67a43', roast: 'HAZELNUT' },
 ]
 
 function BenefitItem({ title, detail, icon }) {
