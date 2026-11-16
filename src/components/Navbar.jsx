@@ -12,9 +12,9 @@ function Navbar() {
           <li><a href="/" className="transition-colors hover:text-[#9b5b28]">Home</a></li>
           <li><a href="/shop" className="transition-colors hover:text-[#9b5b28]">Shop</a></li>
           <li><a href="/menu" className="transition-colors hover:text-[#9b5b28]">Menu</a></li>
-          <li>About Us</li>
-          <li>Blog</li>
-          <li>Contact</li>
+          <li><a href="/about" className="transition-colors hover:text-[#9b5b28]">About Us</a></li>
+          <li><a href="/blog" className="transition-colors hover:text-[#9b5b28]">Blog</a></li>
+          <li><a href="/contact" className="transition-colors hover:text-[#9b5b28]">Contact</a></li>
         </ul>
       </nav>
     </div>
