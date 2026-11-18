@@ -1,29 +1,11 @@
 import { useMemo, useState } from 'react'
-import catKopi from '../assets/cat-kopi.png'
-
-const products = [
-  { id: 'house-latte', name: 'Kopi_Ko Latte', category: 'Coffee', image: catKopi, sizes: [{ label: 'Small', price: 145 }, { label: 'Large', price: 175 }] },
-  { id: 'americano', name: 'Americano', category: 'Coffee', image: catKopi, sizes: [{ label: 'Small', price: 120 }, { label: 'Large', price: 150 }] },
-  { id: 'caramel-cold-brew', name: 'Caramel Cold Brew', category: 'Coffee', image: catKopi, sizes: [{ label: 'Small', price: 160 }, { label: 'Large', price: 190 }] },
-  { id: 'cappuccino', name: 'Cappuccino', category: 'Coffee', image: catKopi, sizes: [{ label: 'Small', price: 135 }, { label: 'Large', price: 165 }] },
-  { id: 'mango-refresher', name: 'Mango Refresher', category: 'Refreshers', image: catKopi, sizes: [{ label: 'Small', price: 140 }, { label: 'Large', price: 170 }] },
-  { id: 'berry-refresher', name: 'Berry Citrus Refresher', category: 'Refreshers', image: catKopi, sizes: [{ label: 'Small', price: 140 }, { label: 'Large', price: 170 }] },
-  { id: 'peach-green-tea', name: 'Peach Green Tea', category: 'Refreshers', image: catKopi, sizes: [{ label: 'Small', price: 135 }, { label: 'Large', price: 165 }] },
-  { id: 'strawberry-lemonade', name: 'Strawberry Lemonade', category: 'Refreshers', image: catKopi, sizes: [{ label: 'Small', price: 140 }, { label: 'Large', price: 170 }] },
-  { id: 'matcha-latte', name: 'Iced Matcha Latte', category: 'Non-Coffee', image: catKopi, sizes: [{ label: 'Small', price: 155 }, { label: 'Large', price: 185 }] },
-  { id: 'iced-chocolate', name: 'Iced Chocolate', category: 'Non-Coffee', image: catKopi, sizes: [{ label: 'Small', price: 140 }, { label: 'Large', price: 170 }] },
-  { id: 'vanilla-steamer', name: 'Vanilla Steamer', category: 'Non-Coffee', image: catKopi, sizes: [{ label: 'Small', price: 120 }, { label: 'Large', price: 150 }] },
-  { id: 'strawberry-milk', name: 'Strawberry Milk', category: 'Non-Coffee', image: catKopi, sizes: [{ label: 'Small', price: 140 }, { label: 'Large', price: 170 }] },
-  { id: 'butter-croissant', name: 'Butter Croissant', category: 'Pastries', image: catKopi, sizes: [{ label: 'Single', price: 85 }, { label: 'Box of 2', price: 150 }] },
-  { id: 'cinnamon-roll', name: 'Cinnamon Roll', category: 'Pastries', image: catKopi, sizes: [{ label: 'Single', price: 100 }, { label: 'Box of 2', price: 180 }] },
-  { id: 'chocolate-muffin', name: 'Chocolate Muffin', category: 'Pastries', image: catKopi, sizes: [{ label: 'Single', price: 90 }, { label: 'Box of 2', price: 160 }] },
-  { id: 'blueberry-scone', name: 'Blueberry Scone', category: 'Pastries', image: catKopi, sizes: [{ label: 'Single', price: 85 }, { label: 'Box of 2', price: 150 }] },
-]
+import { useProducts } from '../hooks/useProducts.js'
 
 const categories = ['All', 'Coffee', 'Refreshers', 'Non-Coffee', 'Pastries']
 const money = (amount) => `₱${amount.toLocaleString('en-PH')}`
 
 function ShopShowcase() {
+  const { products, loading, error } = useProducts()
   const [category, setCategory] = useState('All')
   const [search, setSearch] = useState('')
   const [selectedSizes, setSelectedSizes] = useState({})
@@ -33,7 +15,7 @@ function ShopShowcase() {
   const visibleProducts = useMemo(() => products.filter((product) => {
     const matchesCategory = category === 'All' || product.category === category
     return matchesCategory && product.name.toLowerCase().includes(search.trim().toLowerCase())
-  }), [category, search])
+  }), [products, category, search])
 
   const cartItems = Object.entries(cart)
   const itemCount = cartItems.reduce((sum, [, item]) => sum + item.quantity, 0)
@@ -47,8 +29,8 @@ function ShopShowcase() {
   }
 
   function addToCart(product, size) {
-    const key = `${product.id}-${size.label}`
-    const amount = quantities[product.id] || 1
+    const key = `${product.slug}-${size.label}`
+    const amount = quantities[product.slug] || 1
     setCart((current) => ({
       ...current,
       [key]: {
@@ -122,16 +104,20 @@ function ShopShowcase() {
               </div>
             </div>
 
-            {visibleProducts.length > 0 ? (
+            {loading ? (
+              <p role="status" className="rounded-2xl border border-[#eee5db] bg-white p-8 text-center text-sm text-[#77685c]">Loading products...</p>
+            ) : error ? (
+              <p role="alert" className="rounded-2xl border border-[#eee5db] bg-white p-8 text-center text-sm text-[#77685c]">{error}</p>
+            ) : visibleProducts.length > 0 ? (
               <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
                 {visibleProducts.map((product) => {
-                  const selectedSize = product.sizes[selectedSizes[product.id] || 0]
+                  const selectedSize = product.sizes[selectedSizes[product.slug] || 0]
                   return (
-                    <article key={product.id} className="rounded-xl border border-[#eee5db] bg-white p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-4">
-                      <img src={product.image} alt={`${product.name} photo`} loading="lazy" className="h-32 w-full rounded-lg object-cover" />
+                    <article key={product._id} className="rounded-xl border border-[#eee5db] bg-white p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-4">
+                      {product.image && <img src={product.image} alt={`${product.name} photo`} loading="lazy" className="h-32 w-full rounded-lg object-cover" />}
                       <div className="mt-3 flex min-h-10 items-start justify-between gap-2">
                         <h2 className="text-sm font-bold leading-5 text-[#392316]">{product.name}</h2>
-                        <span className="shrink-0 text-sm font-bold text-[#392316]">{money(selectedSize.price)}</span>
+                        {selectedSize && <span className="shrink-0 text-sm font-bold text-[#392316]">{money(selectedSize.price)}</span>}
                       </div>
                       <p className="mt-1 text-[11px] text-[#8a6a43]">{product.category}</p>
                       <fieldset className="mt-3">
@@ -141,10 +127,10 @@ function ShopShowcase() {
                             <button
                               key={size.label}
                               type="button"
-                              aria-pressed={(selectedSizes[product.id] || 0) === index}
-                              onClick={() => setSelectedSizes((current) => ({ ...current, [product.id]: index }))}
+                              aria-pressed={(selectedSizes[product.slug] || 0) === index}
+                              onClick={() => setSelectedSizes((current) => ({ ...current, [product.slug]: index }))}
                               className={`rounded-full border px-3 py-1 text-[11px] font-medium transition ${
-                                (selectedSizes[product.id] || 0) === index
+                                (selectedSizes[product.slug] || 0) === index
                                   ? 'border-[#e9d8c1] bg-[#f4ece2] text-[#56371f]'
                                   : 'border-[#eee2d3] bg-white text-[#77685c] hover:bg-[#fffaf4]'
                               }`}
@@ -156,11 +142,11 @@ function ShopShowcase() {
                       </fieldset>
                       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center rounded-full border border-[#eee2d3] bg-[#fffaf4]">
-                          <button type="button" aria-label={`Decrease ${product.name} quantity`} onClick={() => changeQuantity(product.id, -1)} className="px-3 py-1.5 text-[#694329]">−</button>
-                          <span className="min-w-5 text-center text-xs">{quantities[product.id] || 1}</span>
-                          <button type="button" aria-label={`Increase ${product.name} quantity`} onClick={() => changeQuantity(product.id, 1)} className="px-3 py-1.5 text-[#694329]">+</button>
+                          <button type="button" aria-label={`Decrease ${product.name} quantity`} onClick={() => changeQuantity(product.slug, -1)} className="px-3 py-1.5 text-[#694329]">−</button>
+                          <span className="min-w-5 text-center text-xs">{quantities[product.slug] || 1}</span>
+                          <button type="button" aria-label={`Increase ${product.name} quantity`} onClick={() => changeQuantity(product.slug, 1)} className="px-3 py-1.5 text-[#694329]">+</button>
                         </div>
-                        <button type="button" onClick={() => addToCart(product, selectedSize)} className="rounded-lg bg-[#422412] px-3 py-2 text-[11px] font-semibold text-white transition hover:bg-[#63391d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9b5b28] sm:px-4">
+                        <button type="button" disabled={!selectedSize} onClick={() => addToCart(product, selectedSize)} className="rounded-lg bg-[#422412] px-3 py-2 text-[11px] font-semibold text-white transition hover:bg-[#63391d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9b5b28] disabled:cursor-not-allowed disabled:bg-[#b9aa9a] sm:px-4">
                           Add to Cart
                         </button>
                       </div>
@@ -183,7 +169,7 @@ function ShopShowcase() {
                 <ul className="mt-4 divide-y divide-[#eee5db]">
                   {cartItems.map(([key, item]) => (
                     <li key={key} className="flex items-center gap-3 py-3">
-                      <img src={item.product.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+                      {item.product.image && <img src={item.product.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />}
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-xs font-semibold text-[#392316]">{item.product.name}</p>
                         <p className="text-[11px] text-[#77685c]">{item.size} · {money(item.price)}</p>

@@ -1,3 +1,5 @@
+import PhotoPlaceholder from './PhotoPlaceholder.jsx'
+
 const values = [
   {
     title: 'Thoughtful coffee',
@@ -18,20 +20,6 @@ const team = [
   { name: 'Guiller Jose', role: 'Coffee Roaster', detail: 'Guiller blah blah blah blah blah blah.' },
   { name: 'Totoy', role: 'Community Host', detail: 'Totoy blah blah blah blah blah blah.' },
 ]
-
-function PhotoPlaceholder({ label, wide = false }) {
-  return (
-    <div
-      role="img"
-      aria-label={`Photo placeholder: ${label}`}
-      className={`flex items-center justify-center rounded-xl border border-dashed border-[#d9c6af] bg-[#f4ece2] text-xs font-medium text-[#9b8067] ${
-        wide ? 'aspect-[16/8] min-h-44' : 'aspect-[4/3]'
-      }`}
-    >
-      Photo placeholder
-    </div>
-  )
-}
 
 function AboutShowcase() {
   return (

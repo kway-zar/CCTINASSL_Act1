@@ -5,12 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "server": "node scripts/server.js",
     "build": "vite build",
     "lint": "eslint .",
+    "db:seed": "node scripts/setup-mongodb.js",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.5",
+    "express": "^5.1.0",
+    "mongoose": "^9.12.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "tailwindcss": "^4.3.5"
