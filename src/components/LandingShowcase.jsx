@@ -1,3 +1,9 @@
+import BenefitItem from './BenefitItem.jsx'
+import PromoCard from './PromoCard.jsx'
+import ProductCard from './ProductCard.jsx'
+import SaleBanner from './SaleBanner.jsx'
+import { useProducts } from '../hooks/useProducts.js'
+
 const benefits = [
   {
     title: 'Free Shipping',
@@ -40,80 +46,10 @@ const benefits = [
   },
 ]
 
-const products = [
-  { name: 'Premium Arabica Coffee Beans', price: '₱849', reviews: 245, color: '#28231f', roast: 'ARABICA' },
-  { name: 'Classic House Blend', price: '₱799', reviews: 189, color: '#9b5b28', roast: 'HOUSE BLEND' },
-  { name: 'Dark Roast Espresso', price: '₱899', reviews: 312, color: '#29231e', roast: 'DARK ROAST' },
-  { name: 'Hazelnut Flavored Coffee', price: '₱749', reviews: 156, color: '#b67a43', roast: 'HAZELNUT' },
-]
-
-function BenefitItem({ title, detail, icon }) {
-  return (
-    <div className="flex flex-col items-center gap-1 text-center text-[#392316]">
-      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        {icon}
-      </svg>
-      <p className="text-xs font-bold">{title}</p>
-      <p className="text-[11px] text-[#77685c]">{detail}</p>
-    </div>
-  )
-}
-
-function PromoCard({ title, subtitle, image, imagePosition = 'center' }) {
-  return (
-    <article
-      className="group relative flex min-h-40 overflow-hidden rounded-2xl bg-cover bg-center text-white shadow-sm sm:min-h-48"
-      style={{ backgroundImage: `url("${image}")`, backgroundPosition: imagePosition }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-r from-[#28170f]/85 via-[#28170f]/35 to-transparent transition-colors group-hover:from-[#28170f]/90" />
-      <div className="relative z-10 flex max-w-[60%] flex-col items-start justify-center gap-2 p-5 sm:p-7">
-        <p className="text-xs font-medium tracking-wide text-white/85">{subtitle}</p>
-        <h3 className="text-xl font-bold leading-tight sm:text-2xl">{title}</h3>
-        <button type="button" className="mt-1 rounded-lg bg-[#422412] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#63391d]">
-          Shop Now
-        </button>
-      </div>
-    </article>
-  )
-}
-
-function ProductCard({ name, price, reviews }) {
-  return (
-    <article className="overflow-hidden rounded-xl border border-[#eee5db] bg-white transition hover:-translate-y-1 hover:shadow-lg">
-      <div className="flex h-40 items-center justify-center bg-[#f7f2eb] p-4 sm:h-48">
-       
-      </div>
-      <div className="p-3 sm:p-4">
-        <h3 className="min-h-10 text-left text-xs font-semibold leading-5 text-[#392316] sm:text-sm">{name}</h3>
-        <p className="mt-1 text-sm font-bold text-[#392316] text-start">{price}</p>
-        <div className="mt-1 flex items-center gap-1 text-[11px] text-[#8a6a43]" aria-label={`Rated 5 out of 5 stars, ${reviews} reviews`}>
-          <span aria-hidden="true">★★★★★</span>
-          <span className="text-[#77685c]">({reviews})</span>
-        </div>
-      </div>
-    </article>
-  )
-}
-
-function SaleBanner() {
-  return (
-    <article
-      className="relative flex min-h-40 items-center overflow-hidden rounded-2xl bg-cover bg-center text-white shadow-sm sm:min-h-52"
-      style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1600&q=85")' }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-r from-[#24150e]/95 via-[#24150e]/65 to-[#24150e]/10" />
-      <div className="relative z-10 p-6 sm:p-10">
-        <p className="text-sm font-semibold text-[#e4c9a7]">Summer Sale</p>
-        <h2 className="mt-1 text-2xl font-bold sm:text-3xl">Up to 30% Off</h2>
-        <button type="button" className="mt-4 rounded-lg bg-[#fffaf3] px-5 py-2 text-sm font-semibold text-[#392316] transition hover:bg-[#e9d8c1]">
-          Shop Now
-        </button>
-      </div>
-    </article>
-  )
-}
-
 export default function LandingShowcase() {
+  const { products, loading, error } = useProducts()
+  const featuredProducts = products.slice(0, 4)
+
   return (
     <section className="bg-[#fffaf4] px-4 py-8 sm:px-8 sm:py-12 lg:px-12" aria-label="Coffee shop highlights">
       <div className="mx-auto flex max-w-6xl flex-col gap-7 sm:gap-9">
@@ -143,9 +79,34 @@ export default function LandingShowcase() {
               View All
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-            {products.map((product) => <ProductCard key={product.name} {...product} />)}
-          </div>
+          {loading ? (
+            <p role="status" className="rounded-xl border border-[#eee5db] bg-white p-6 text-center text-sm text-[#77685c]">Loading best sellers...</p>
+          ) : error ? (
+            <p role="alert" className="rounded-xl border border-[#eee5db] bg-white p-6 text-center text-sm text-[#77685c]">{error}</p>
+          ) : featuredProducts.length ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+              {featuredProducts.map((product) => {
+                const startingPrice = product.sizes?.length
+                  ? Math.min(...product.sizes.map((size) => size.price))
+                  : null
+                const price = startingPrice === null
+                  ? 'Price unavailable'
+                  : `From ₱${startingPrice.toLocaleString('en-PH')}`
+
+                return (
+                  <ProductCard
+                    key={product._id}
+                    name={product.name}
+                    price={price}
+                    image={product.image}
+                    reviews={product.reviews}
+                  />
+                )
+              })}
+            </div>
+          ) : (
+            <p className="rounded-xl border border-[#eee5db] bg-white p-6 text-center text-sm text-[#77685c]">No products available yet.</p>
+          )}
         </div>
 
         <SaleBanner />

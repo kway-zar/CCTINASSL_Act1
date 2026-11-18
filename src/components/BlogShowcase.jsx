@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import BlogPhotoPlaceholder from './BlogPhotoPlaceholder.jsx'
 
 const articles = [
   {
@@ -59,20 +60,6 @@ const articles = [
 
 const categories = ['All Stories', 'Brewing Guides', 'Behind the Beans', 'Pairings', 'Coffee Stories']
 
-function PhotoPlaceholder({ label, featured = false }) {
-  return (
-    <div
-      role="img"
-      aria-label={`Photo placeholder: ${label}`}
-      className={`flex items-center justify-center rounded-xl border border-dashed border-[#d9c6af] bg-[#f4ece2] text-xs font-medium text-[#9b8067] ${
-        featured ? 'aspect-[16/8] min-h-44' : 'aspect-[4/3]'
-      }`}
-    >
-      Photo placeholder
-    </div>
-  )
-}
-
 function BlogShowcase() {
   const [activeCategory, setActiveCategory] = useState('All Stories')
   const [search, setSearch] = useState('')
@@ -96,7 +83,7 @@ function BlogShowcase() {
         </header>
 
         <section className="mb-10 grid items-center gap-6 rounded-2xl border border-[#eee5db] bg-white p-4 shadow-sm sm:p-6 md:grid-cols-2" aria-labelledby="featured-story">
-          <PhotoPlaceholder label="featured coffee story" featured />
+          <BlogPhotoPlaceholder label="featured coffee story" featured />
           <div className="text-left">
             <p className="text-xs font-bold tracking-[0.15em] text-[#9b5b28]">FEATURED STORY · {articles[0].category.toUpperCase()}</p>
             <h2 id="featured-story" className="mt-3 text-2xl font-bold leading-tight text-[#392316] sm:text-3xl">{articles[0].title}</h2>
@@ -149,7 +136,7 @@ function BlogShowcase() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {visibleArticles.map((article) => (
                 <article key={article.id} className="rounded-xl border border-[#eee5db] bg-white p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-4">
-                  <PhotoPlaceholder label={article.title} />
+                  <BlogPhotoPlaceholder label={article.title} />
                   <p className="mt-4 text-[10px] font-bold tracking-[0.12em] text-[#9b5b28]">{article.category.toUpperCase()}</p>
                   <h3 className="mt-2 text-base font-bold leading-6 text-[#392316]">{article.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-[#77685c]">{article.excerpt}</p>

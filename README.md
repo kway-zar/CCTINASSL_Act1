@@ -1,5 +1,11 @@
 # React + Vite
 
+## Product database
+
+Set `MONGODB_URI` if MongoDB is not available at `mongodb://localhost:27017/Kopi_Ko`. Seed the product collection with `npm run db:seed`.
+
+Run the API and frontend in separate terminals with `npm run server` and `npm run dev`. The frontend proxies `/api` requests to the API, which serves products from `GET /api/products`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
