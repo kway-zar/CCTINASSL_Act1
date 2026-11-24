@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import PhotoPlaceholder from './PhotoPlaceholder.jsx'
 
 const values = [
@@ -15,13 +16,42 @@ const values = [
   },
 ]
 
-const team = [
-  { name: 'Bana Banana', role: 'Head Barista', detail: 'Bana blah blah blah blah blah blah.' },
-  { name: 'Guiller Jose', role: 'Coffee Roaster', detail: 'Guiller blah blah blah blah blah blah.' },
-  { name: 'Totoy', role: 'Community Host', detail: 'Totoy blah blah blah blah blah blah.' },
-]
-
 function AboutShowcase() {
+  const [team, setTeam] = useState([])
+  const [loadingTeam, setLoadingTeam] = useState(true)
+  const [teamError, setTeamError] = useState('')
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadTeam() {
+      try {
+        const response = await fetch('/api/team', { signal: controller.signal })
+        if (!response.ok) {
+          throw new Error(`Unable to load the team (${response.status}).`)
+        }
+
+        const data = await response.json()
+        if (!Array.isArray(data)) {
+          throw new Error('The team API returned an invalid response.')
+        }
+
+        setTeam(data)
+      } catch (loadError) {
+        if (loadError.name !== 'AbortError') {
+          setTeamError(loadError instanceof Error ? loadError.message : 'Unable to load the team.')
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingTeam(false)
+        }
+      }
+    }
+
+    loadTeam()
+    return () => controller.abort()
+  }, [])
+
   return (
     <main className="flex-1 bg-[#fffaf4] text-[#392316]">
       <header className="bg-[#f7efe3] px-4 py-12 text-center sm:px-8 sm:py-16">
@@ -74,18 +104,26 @@ function AboutShowcase() {
           <h2 id="meet-the-team" className="mt-2 text-2xl font-bold sm:text-3xl">Meet our coffee crew</h2>
           <p className="mt-2 text-sm text-[#77685c]">A friendly team with a shared love for good coffee and good company.</p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {team.map((member) => (
-            <article key={member.name} className="rounded-xl border border-[#eee5db] bg-white p-3 text-left shadow-sm sm:p-4">
-              <PhotoPlaceholder label={`${member.name}, ${member.role}`} />
-              <div className="p-1 pt-4">
-                <h3 className="font-bold">{member.name}</h3>
-                <p className="mt-1 text-xs font-semibold text-[#9b5b28]">{member.role}</p>
-                <p className="mt-2 text-sm leading-6 text-[#77685c]">{member.detail}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+        {loadingTeam ? (
+          <p role="status" className="py-8 text-center text-sm text-[#77685c]">Loading our coffee crew...</p>
+        ) : teamError ? (
+          <p role="alert" className="py-8 text-center text-sm text-[#9b3d2c]">{teamError}</p>
+        ) : team.length ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {team.map((member) => (
+              <article key={member._id} className="rounded-xl border border-[#eee5db] bg-white p-3 text-left shadow-sm sm:p-4">
+                <PhotoPlaceholder label={`${member.name}, ${member.role}`} image={member.image} />
+                <div className="p-1 pt-4">
+                  <h3 className="font-bold">{member.name}</h3>
+                  <p className="mt-1 text-xs font-semibold text-[#9b5b28]">{member.role}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#77685c]">{member.detail}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="py-8 text-center text-sm text-[#77685c]">Our coffee crew will be introduced here soon.</p>
+        )}
       </section>
 
       <section className="border-t border-[#eee2d3] bg-white px-4 py-8 sm:px-8" aria-labelledby="visit-kopi-ko">

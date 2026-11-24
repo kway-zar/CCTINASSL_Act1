@@ -1,4 +1,4 @@
-import BlogShowcase from '../components/BlogShowcase.jsx'
+import BlogShowcase from '../../scripts/views/BlogShowcase.jsx'
 
 function BlogPage() {
   return <BlogShowcase />

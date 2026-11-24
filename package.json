@@ -9,6 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "db:seed": "node scripts/setup-mongodb.js",
+    "db:update-product-images": "node scripts/update-product-images.js",
     "preview": "vite preview"
   },
   "dependencies": {

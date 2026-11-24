@@ -2,7 +2,7 @@ import BenefitItem from './BenefitItem.jsx'
 import PromoCard from './PromoCard.jsx'
 import ProductCard from './ProductCard.jsx'
 import SaleBanner from './SaleBanner.jsx'
-import { useProducts } from '../hooks/useProducts.js'
+import { useProducts } from '../../scripts/hooks/useProducts.js'
 
 const benefits = [
   {

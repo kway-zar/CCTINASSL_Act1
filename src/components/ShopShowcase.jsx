@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useProducts } from '../hooks/useProducts.js'
+import { useProducts } from '../../scripts/hooks/useProducts'
 
 const categories = ['All', 'Coffee', 'Refreshers', 'Non-Coffee', 'Pastries']
 const money = (amount) => `₱${amount.toLocaleString('en-PH')}`
