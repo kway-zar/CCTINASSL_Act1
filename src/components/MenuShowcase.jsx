@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useProducts } from '../hooks/useProducts.js'
+import { useProducts } from '../../scripts/hooks/useProducts.js'
 
 const categories = ['Coffee', 'Refreshers', 'Non-Coffee', 'Pastries']
 
@@ -47,7 +47,14 @@ function MenuShowcase() {
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
               {categoryProducts.map((product) => (
                 <article key={product._id} className="rounded-xl border border-[#eee5db] bg-white p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-4">
-                  {product.image && <img src={product.image} alt={`${product.name} photo`} loading="lazy" className="h-32 w-full rounded-lg object-cover" />}
+                 
+                    <img
+                      src={ product.image}
+                      alt={`${product.name} photo`}
+                      loading="lazy"
+                      className="h-32 w-full rounded-lg object-cover"
+                    />
+                 
                   <div className="mt-3 flex items-start justify-between gap-2">
                     <h3 className="text-sm font-bold leading-5">{product.name}</h3>
                     {product.sizes[0] && <span className="shrink-0 text-sm font-bold text-[#694329]">₱{product.sizes[0].price}</span>}
